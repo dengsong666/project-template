@@ -1,0 +1,23 @@
+// 滚动条
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d3dbeb;
+  border-radius: 10px;
+}
+.line-of {
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+}
+@mixin mline-of($l) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: $l;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis; 
+}
