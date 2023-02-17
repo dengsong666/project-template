@@ -1,4 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-
-createApp(App).mount('#app')
+import { setupDirective } from './directives'
+import { setupRouter } from './router'
+import { setupStore } from './store'
+const app = createApp(App)
+setupDirective(app)
+setupStore(app)
+setupRouter(app)
+app.mount('#app')
