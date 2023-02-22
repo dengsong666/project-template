@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios'
 
 const service: AxiosInstance = axios.create({
   baseURL: '/api',
@@ -46,4 +46,4 @@ service.interceptors.response.use(
   }
 )
 
-export const http = <T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', config: AxiosRequestConfig): Promise<ResponseData<T>> => service.request({ ...config, method })
+export default <T = any>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', config: AxiosRequestConfig): Promise<ResponseData<T>> => service.request({ ...config, method })
