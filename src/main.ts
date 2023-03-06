@@ -5,6 +5,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // app.use(new LoggerMiddleware());
   app.useGlobalFilters(new HttpExceptionFiter());
-  await app.listen(3000);
+  await app.listen(process.env.APP_LISTEN_PORT);
 }
 bootstrap();

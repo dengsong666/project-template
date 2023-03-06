@@ -1,12 +1,12 @@
 import { BaseEntity } from 'config/database';
 import { Column, Entity } from 'typeorm';
 
-@Entity('users')
-export class UsersEntity extends BaseEntity {
+@Entity('user')
+export class UserEntity extends BaseEntity {
   @Column()
   username: string;
 
-  @Column()
+  @Column({ nullable: true })
   age: number;
 
   @Column()

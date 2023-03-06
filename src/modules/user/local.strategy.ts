@@ -1,4 +1,4 @@
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
@@ -6,7 +6,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 // 本地策略非必须
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly userService: UsersService) {
+  constructor(private readonly userService: UserService) {
     super();
   }
   async validate(username: string, password: string): Promise<any> {

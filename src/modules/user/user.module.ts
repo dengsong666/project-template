@@ -4,21 +4,21 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
-import { UsersController } from './users.controller';
-import { UsersEntity } from './users.entity';
-import { UsersService } from './users.service';
+import { UserController } from './user.controller';
+import { UserEntity } from './user.entity';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UsersEntity]),
+    TypeOrmModule.forFeature([UserEntity]),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60s' },
     }),
   ],
-  providers: [UsersService, LocalStrategy, JwtStrategy],
-  controllers: [UsersController],
-  exports: [UsersService],
+  providers: [UserService, LocalStrategy, JwtStrategy],
+  controllers: [UserController],
+  exports: [UserService],
 })
-export class UsersModule {}
+export class UserModule {}

@@ -4,11 +4,11 @@ import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { EmailModule } from './modules/email/email.module';
 import config from 'config';
-import { UsersModule } from './modules/users/users.module';
+import { UserModule } from './modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [...config, EmailModule, UsersModule],
+  imports: [...config, EmailModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
