@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFiter } from './common/filters/http-exception.filter';
+import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.use(new LoggerMiddleware());
+  app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFiter());
   await app.listen(process.env.APP_LISTEN_PORT);
 }

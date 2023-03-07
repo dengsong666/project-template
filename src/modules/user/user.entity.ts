@@ -9,9 +9,9 @@ export class UserEntity extends BaseEntity {
   @Column({ nullable: true })
   age: number;
 
-  @Column()
+  @Column({ select: true })
   password: string;
 
-  @Column()
+  @Column({ select: true })
   pwdsalt: string;
 }
