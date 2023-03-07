@@ -8,8 +8,6 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 
-export const NoAuth = () => SetMetadata('NO_AUTH', true);
-
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {

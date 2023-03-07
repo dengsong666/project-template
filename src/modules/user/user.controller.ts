@@ -4,7 +4,7 @@ import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { UserPwdDTO } from './dto/user.dto';
-import { NoAuth } from 'src/common/guard/auth.guard';
+import { NoAuth } from 'src/common/decorator';
 
 @Crud({
   model: { type: UserEntity },

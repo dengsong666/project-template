@@ -2,6 +2,12 @@ import { BaseEntity } from 'config/database';
 import { Column, Entity } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  GHOST = 'ghost',
+}
+
 @Entity('user')
 export class UserEntity extends BaseEntity {
   @Column({ length: 100, comment: '用户名' })
@@ -12,6 +18,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'int', nullable: true, comment: '年龄' })
   age: number;
+
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.GHOST })
+  role: UserRole;
 
   @Column({ comment: '密码' })
   @Exclude()
