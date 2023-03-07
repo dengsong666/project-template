@@ -1,5 +1,6 @@
 import { BaseEntity } from 'config/database';
 import { Column, Entity } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -9,9 +10,11 @@ export class UserEntity extends BaseEntity {
   @Column({ nullable: true })
   age: number;
 
-  @Column({ select: true })
+  @Column()
+  @Exclude()
   password: string;
 
-  @Column({ select: true })
+  @Column()
+  @Exclude()
   pwdsalt: string;
 }
