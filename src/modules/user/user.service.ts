@@ -1,20 +1,17 @@
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import {
-  ClassSerializerInterceptor,
-  Injectable,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
-import { JwtService } from '@nestjs/jwt';
 import { encryptPassword, makeSalt } from 'src/utils/cryptogram';
+import { UserPwdDTO } from './dto/user.dto';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
   constructor(@InjectRepository(UserEntity) repo) {
     super(repo);
   }
-  async validateUser(username: string, password: string): Promise<any> {
+  async validateUser(dto: UserPwdDTO): Promise<any> {
+    const { username, password } = dto;
     const user = await this.findOne({ where: { username } });
     if (user) {
       // 通过密码盐，加密传参，再与数据库里的比较，判断是否相等
@@ -29,16 +26,12 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param username
    * @param password
    */
-
-  async register(username, password): Promise<UserEntity> {
+  async autoRegister(dto: UserPwdDTO): Promise<UserEntity> {
     const pwdsalt = makeSalt();
-    const a = this.repo.save({
-      username,
-      password: encryptPassword(password, pwdsalt), // 加密密码
-      pwdsalt,
-    });
-    console.log(typeof a);
-
-    return a;
+    const user = new UserEntity();
+    user.username = dto.username;
+    user.password = encryptPassword(dto.password, pwdsalt);
+    user.pwdsalt = pwdsalt;
+    return this.repo.save(user);
   }
 }

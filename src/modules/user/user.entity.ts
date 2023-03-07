@@ -4,17 +4,20 @@ import { Exclude } from 'class-transformer';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
-  @Column()
+  @Column({ length: 100, comment: '用户名' })
   username: string;
 
-  @Column({ nullable: true })
+  @Column({ length: 100, nullable: true, comment: '昵称' })
+  nickname: string;
+
+  @Column({ type: 'int', nullable: true, comment: '年龄' })
   age: number;
 
-  @Column()
+  @Column({ comment: '密码' })
   @Exclude()
   password: string;
 
-  @Column()
-  @Exclude()
+  @Column({ comment: '密码盐' })
+  @Exclude({ toPlainOnly: true })
   pwdsalt: string;
 }

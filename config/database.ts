@@ -1,5 +1,4 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Exclude } from 'class-transformer';
 import * as dayjs from 'dayjs';
 import {
   CreateDateColumn,
@@ -25,6 +24,7 @@ export default TypeOrmModule.forRootAsync({
     autoLoadEntities: true,
   }),
 });
+@Entity('Base')
 export class BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;

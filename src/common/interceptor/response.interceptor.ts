@@ -4,9 +4,9 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { classToPlain, instanceToPlain } from 'class-transformer';
+import { isArray, isNotEmptyObject } from 'class-validator';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 const action = (method: string) => {
   switch (method) {
     case 'GET':
@@ -29,11 +29,10 @@ export class ResponseInterceptor implements NestInterceptor {
       map((value) => {
         const { code = 0, msg = '', ...data } = value;
         const { method } = context.switchToHttp().getRequest();
-        const { statusCode } = context.switchToHttp().getResponse();
         return {
-          data,
-          code: code || statusCode || 0,
+          data: isNotEmptyObject(data) ? (isArray(value) ? value : data) : null,
           msg: msg || action(method),
+          code,
         };
       }),
     );
