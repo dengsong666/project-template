@@ -5,6 +5,7 @@ import { HttpExceptionFiter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 import { CrudConfigService } from '@nestjsx/crud';
 import { JwtAuthGuard } from './common/guard/auth.guard';
+import rateLimit from 'express-rate-limit';
 CrudConfigService.load({
   query: {
     maxLimit: 100,
@@ -23,6 +24,12 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFiter()); // 异常过滤器
   app.useGlobalPipes(new ValidationPipe()); // 请求验证
   app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector))); // jwt守卫
+  app.use(
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+    }),
+  );
   await app.listen(process.env.APP_LISTEN_PORT);
 }
 bootstrap();

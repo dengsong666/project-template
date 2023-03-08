@@ -27,7 +27,7 @@ export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((value) => {
-        const { code = 0, msg = '', ...data } = value;
+        const { code = 0, msg = '', ...data } = value ?? {};
         const { method } = context.switchToHttp().getRequest();
         return {
           data: isNotEmptyObject(data) ? (isArray(value) ? value : data) : null,
