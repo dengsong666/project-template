@@ -22,7 +22,8 @@ export class UserController implements CrudController<UserEntity> {
     const { code, user } = await this.service.validateUser(dto);
     switch (code) {
       case 0:
-        return this.service.autoRegister(dto);
+        const response = await this.service.autoRegister(dto);
+        return { ...response, msg: '注册成功' };
       case 1:
         const payload = { username: dto.username, sub: user.id };
         return { token: this.jwtService.sign(payload), msg: '登录成功' };
