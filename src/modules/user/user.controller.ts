@@ -1,4 +1,3 @@
-import { password } from 'src/utils/regexp';
 import {
   Body,
   Controller,
@@ -11,49 +10,55 @@ import {
 import { Crud, CrudController } from '@nestjsx/crud';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
-import { JwtService } from '@nestjs/jwt';
-import { UserDTO, UserToken } from './dto/user.dto';
 import { NoAuth, Roles } from 'src/common/decorator';
 import { RolesGuard } from 'src/common/guard/role.guard';
 import { Request } from 'express';
-import { plainToInstance } from 'class-transformer';
 import { UserRole } from 'src/utils/enum';
-import { AuthGuard } from '@nestjs/passport';
-import { PickKeysByType } from 'typeorm/common/PickKeysByType';
 @Crud({
   model: { type: UserEntity },
   routes: {
     exclude: ['createOneBase'],
     getManyBase: {
-      // decorators: [Roles(UserRole.ADMIN)],
+      decorators: [Roles(UserRole.ADMIN)],
+    },
+  },
+  dto: {
+    update: UserEntity,
+  },
+  query: {
+    join: {
+      profile: {
+        persist: ['username'],
+        exclude: ['token'],
+        eager: true,
+      },
     },
   },
 })
 @Controller('user')
 @UseGuards(RolesGuard)
 export class UserController implements CrudController<UserEntity> {
-  constructor(
-    public service: UserService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(public service: UserService) {}
   // 登录测试
   @NoAuth()
   @Post('login')
-  async login(@Body() data: UserDTO): Promise<any> {
+  async login(@Body() data: UserEntity): Promise<any> {
     return this.service.validateUser(data);
   }
   @NoAuth()
   @Post('register')
-  async register(@Body() data: UserDTO) {
+  async register(@Body() data: UserEntity) {
     return this.service.register(data);
   }
   @Get('profile')
-  async getProfile(@Req() request: Request): Promise<any> {
-    return this.service.getProfile(request.user as UserToken);
+  async profile(@Req() request: Request): Promise<any> {
+    return this.service.getProfile(request.user as any);
   }
-
   @Patch('password')
-  password(@Req() request: Request, @Body() data: UserDTO) {
-    return this.service.setPassword(request.user as UserToken, data);
+  async password(
+    @Req() request: Request,
+    @Body() { password }: UserEntity,
+  ): Promise<any> {
+    return this.service.setPassword(request.user as any, password);
   }
 }

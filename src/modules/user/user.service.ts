@@ -5,7 +5,6 @@ import { UserEntity } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
-import { UserDTO, UserToken } from './dto/user.dto';
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
   constructor(
@@ -19,13 +18,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param dto
    * @returns
    */
-  async validateUser(dto: UserDTO): Promise<any> {
-    const { username, password } = dto;
+  async validateUser(data: UserEntity): Promise<any> {
+    const { username, password } = data;
     const user = await this.findOne({ where: { username } });
     if (user) {
+      console.log(await bcrypt.compare(password, user.password));
+
       if (await bcrypt.compare(password, user.password)) {
         const { id, role } = user;
-        const payload = { username: dto.username, id, role };
+        const payload = { username: data.username, id, role };
         return { token: this.jwtService.sign(payload), msg: '登录成功' };
       } else return { code: 1, msg: '密码错误' };
     }
@@ -36,24 +37,23 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param dto
    * @returns
    */
-  async register(dto: UserDTO): Promise<UserEntity> {
+  async register(data: UserEntity): Promise<UserEntity> {
     const user = new UserEntity();
-    user.username = dto.username;
-    user.password = dto.password;
-    user.role = dto.role;
+    user.username = data.username;
+    user.password = data.password;
+    user.role = data.role;
     return this.repo.save(user);
   }
-  async getProfile(userToken: UserToken) {
+  async getProfile(userToken: any) {
     const { id } = userToken ?? {};
     const user = await this.repo.findOne({ where: { id } });
     return user || { code: 1, msg: '不存在该用户' };
   }
-  async setPassword(userToken: UserToken, dto: UserDTO): Promise<UserEntity> {
-    const user = new UserEntity();
-    user.username = userToken.username;
-    user.password = dto.newPassword;
-    console.log(user);
-
-    return this.repo.save(user);
+  async setPassword(userToken: any, password: string) {
+    const { id } = userToken ?? {};
+    const userEntity = new UserEntity();
+    userEntity.id = id;
+    userEntity.password = password;
+    return this.repo.save(userEntity) || { code: 1, msg: '不存在该用户' };
   }
 }

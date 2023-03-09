@@ -9,7 +9,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFiter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     console.log(exception);
