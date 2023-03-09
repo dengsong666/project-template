@@ -5,7 +5,7 @@ import { UserRole } from 'src/utils/enum';
 import * as bcrypt from 'bcrypt';
 @Entity('user')
 export class UserEntity extends BaseEntity {
-  @Column({ length: 100, comment: '用户名', primary: true })
+  @Column({ length: 100, comment: '用户名', primary: true, unique: true })
   username: string;
 
   @Column({ length: 100, nullable: true, comment: '昵称' })
@@ -25,8 +25,9 @@ export class UserEntity extends BaseEntity {
   @BeforeUpdate()
   async encryptPwd() {
     console.log('pwd:' + this.password);
-
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    if (this.password) {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    }
   }
 }

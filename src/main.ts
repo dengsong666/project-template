@@ -5,7 +5,7 @@ import { HttpExceptionFiter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 import { CrudConfigService } from '@nestjsx/crud';
 import { JwtAuthGuard } from './common/guard/auth.guard';
-import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 CrudConfigService.load({
   query: {
     maxLimit: 100,
@@ -18,18 +18,14 @@ CrudConfigService.load({
   },
 });
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
+  // app.setGlobalPrefix('api/v1');
   app.useGlobalInterceptors(new ResponseInterceptor()); // 结果格式化
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector))); // 结果序列化
+  app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector))); // jwt守卫
   app.useGlobalFilters(new HttpExceptionFiter()); // 异常过滤器
   app.useGlobalPipes(new ValidationPipe()); // 请求验证
-  app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector))); // jwt守卫
-  app.use(
-    rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 100,
-    }),
-  );
+  app.use(helmet()); // 防止跨站脚本攻击
   await app.listen(process.env.APP_LISTEN_PORT);
 }
 bootstrap();

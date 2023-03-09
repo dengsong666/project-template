@@ -2,10 +2,10 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
-import { UserPwdDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
+import { UserDTO, UserToken } from './dto/user.dto';
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
   constructor(
@@ -19,7 +19,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @param dto
    * @returns
    */
-  async validateUser(dto: UserPwdDTO): Promise<any> {
+  async validateUser(dto: UserDTO): Promise<any> {
     const { username, password } = dto;
     const user = await this.findOne({ where: { username } });
     if (user) {
@@ -31,11 +31,29 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     }
     return { code: 2, msg: '用户不存在' };
   }
-
-  async setUsernamePassword(dto: UserPwdDTO): Promise<UserEntity> {
+  /**
+   * 用户注册
+   * @param dto
+   * @returns
+   */
+  async register(dto: UserDTO): Promise<UserEntity> {
     const user = new UserEntity();
     user.username = dto.username;
     user.password = dto.password;
+    user.role = dto.role;
+    return this.repo.save(user);
+  }
+  async getProfile(userToken: UserToken) {
+    const { id } = userToken ?? {};
+    const user = await this.repo.findOne({ where: { id } });
+    return user || { code: 1, msg: '不存在该用户' };
+  }
+  async setPassword(userToken: UserToken, dto: UserDTO): Promise<UserEntity> {
+    const user = new UserEntity();
+    user.username = userToken.username;
+    user.password = dto.newPassword;
+    console.log(user);
+
     return this.repo.save(user);
   }
 }
