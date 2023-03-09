@@ -5,20 +5,31 @@ import { UserEntity } from './user.entity';
 import { UserPwdDTO } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
 import { plainToClass, plainToInstance } from 'class-transformer';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
-  constructor(@InjectRepository(UserEntity) repo) {
+  constructor(
+    @InjectRepository(UserEntity) repo,
+    private readonly jwtService: JwtService,
+  ) {
     super(repo);
   }
+  /**
+   * 用户密码验证用户
+   * @param dto
+   * @returns
+   */
   async validateUser(dto: UserPwdDTO): Promise<any> {
     const { username, password } = dto;
     const user = await this.findOne({ where: { username } });
     if (user) {
-      if (await bcrypt.compare(password, user.password))
-        return { code: 1, user }; // 密码正确
-      else return { code: 2, user: null }; // 密码错误
+      if (await bcrypt.compare(password, user.password)) {
+        const { id, role } = user;
+        const payload = { username: dto.username, id, role };
+        return { token: this.jwtService.sign(payload), msg: '登录成功' };
+      } else return { code: 1, msg: '密码错误' };
     }
-    return { code: 0, user };
+    return { code: 2, msg: '用户不存在' };
   }
 
   async setUsernamePassword(dto: UserPwdDTO): Promise<UserEntity> {
