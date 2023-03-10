@@ -43,7 +43,7 @@ export class UserController implements CrudController<UserEntity> {
   @NoAuth()
   @Post('login')
   async login(@Body() data: UserEntity): Promise<any> {
-    return this.service.validateUser(data);
+    return this.service.login(data);
   }
   @NoAuth()
   @Post('register')
@@ -52,13 +52,17 @@ export class UserController implements CrudController<UserEntity> {
   }
   @Get('profile')
   async profile(@Req() request: Request): Promise<any> {
-    return this.service.getProfile(request.user as any);
+    const { id, username } = request.user as any;
+    return this.service.getProfile(id);
   }
   @Patch('password')
   async password(
     @Req() request: Request,
-    @Body() { password }: UserEntity,
+    @Body() data: UserEntity,
   ): Promise<any> {
-    return this.service.setPassword(request.user as any, password);
+    const { id, username } = request.user as any;
+    data.id = id;
+    data.username = username;
+    return this.service.setPassword(data);
   }
 }

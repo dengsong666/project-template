@@ -42,8 +42,15 @@ export class UserEntity extends BaseEntity {
   })
   @IsNotEmpty({ message: '请输入密码' })
   @Column({ comment: '密码', nullable: true })
-  @Exclude({ toPlainOnly: true })
+  @Exclude()
   password: string;
+
+  @IsOptional()
+  @Matches(password, {
+    message: '新密码长度8-16位，至少1个大写字母，1个小写字母和1个数字',
+  })
+  @IsNotEmpty({ message: '请输入新密码' })
+  newPassword: string;
 
   @BeforeInsert()
   async encryptPwd2() {

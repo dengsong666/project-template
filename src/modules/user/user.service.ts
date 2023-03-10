@@ -14,23 +14,30 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     super(repo);
   }
   /**
-   * 用户密码验证用户
-   * @param dto
+   * 用户校验
+   * @param data
    * @returns
    */
   async validateUser(data: UserEntity): Promise<any> {
     const { username, password } = data;
     const user = await this.findOne({ where: { username } });
     if (user) {
-      console.log(await bcrypt.compare(password, user.password));
-
-      if (await bcrypt.compare(password, user.password)) {
-        const { id, role } = user;
-        const payload = { username: data.username, id, role };
-        return { token: this.jwtService.sign(payload), msg: '登录成功' };
-      } else return { code: 1, msg: '密码错误' };
+      const isOk = await bcrypt.compare(password, user.password);
+      return isOk ? user : { code: 1, msg: '密码错误' };
     }
     return { code: 2, msg: '用户不存在' };
+  }
+  /**
+   * 用户登录
+   * @param data
+   * @returns
+   */
+  async login(data: UserEntity): Promise<any> {
+    const res = await this.validateUser(data);
+    if (res.code) return res;
+    const { id, username, role } = res;
+    const payload = { username, id, role };
+    return { token: this.jwtService.sign(payload), msg: '登录成功' };
   }
   /**
    * 用户注册
@@ -44,16 +51,24 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     user.role = data.role;
     return this.repo.save(user);
   }
-  async getProfile(userToken: any) {
-    const { id } = userToken ?? {};
+  /**
+   * 获取个人信息
+   * @param token
+   * @returns
+   */
+  async getProfile(id: string) {
     const user = await this.repo.findOne({ where: { id } });
     return user || { code: 1, msg: '不存在该用户' };
   }
-  async setPassword(userToken: any, password: string) {
-    const { id } = userToken ?? {};
-    const userEntity = new UserEntity();
-    userEntity.id = id;
-    userEntity.password = password;
-    return this.repo.save(userEntity) || { code: 1, msg: '不存在该用户' };
+  /**
+   * 密码修改
+   * @param token
+   * @param password
+   * @returns
+   */
+  async setPassword(data: UserEntity) {
+    const res = await this.validateUser(data);
+    if (res.code) return res;
+    return data.id ? this.repo.save(data) : { code: 1, msg: '不存在该用户' };
   }
 }
