@@ -22,7 +22,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const { username, password } = data;
     const user = await this.findOne({ where: { username } });
     if (user) {
-      const isOk = await bcrypt.compare(password, user.password);
+      const isOk = bcrypt.compare(password, user.password);
       return isOk ? user : { code: 1, msg: '密码错误' };
     }
     return { code: 2, msg: '用户不存在' };
@@ -33,42 +33,54 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @returns
    */
   async login(data: UserEntity): Promise<any> {
-    const res = await this.validateUser(data);
-    if (res.code) return res;
-    const { id, username, role } = res;
-    const payload = { username, id, role };
-    return { token: this.jwtService.sign(payload), msg: '登录成功' };
+    const { username, password } = data;
+    const user = await this.findOne({ where: { username } });
+    const { id, password: pwd, role } = user;
+    if (user) {
+      if (bcrypt.compareSync(password, pwd))
+        return {
+          token: this.jwtService.sign({ username, id, role }),
+          msg: '登录成功',
+        };
+      else return { code: 1, msg: '密码错误' };
+    }
+    return { code: 2, msg: '用户不存在' };
   }
   /**
    * 用户注册
-   * @param dto
+   * @param data
    * @returns
    */
-  async register(data: UserEntity): Promise<UserEntity> {
-    const user = new UserEntity();
-    user.username = data.username;
-    user.password = data.password;
-    user.role = data.role;
-    return this.repo.save(user);
+  async register(data: UserEntity): Promise<any> {
+    const { username, password } = data;
+    const user = await this.findOne({ where: { username } });
+    if (user) return { code: 2, msg: '用户已存在' };
+    return this.repo.save(plainToInstance(UserEntity, { username, password }));
   }
   /**
-   * 获取个人信息
-   * @param token
+   * 个人信息
+   * @param data
+   * @param isGet 是否获取
    * @returns
    */
-  async getProfile(id: string) {
-    const user = await this.repo.findOne({ where: { id } });
-    return user || { code: 1, msg: '不存在该用户' };
+  async profile(data: UserEntity, isGet = true) {
+    if (isGet) return this.findOne({ where: { id: data.id } });
+    else {
+      if (data.password || data.newPassword) this.throwBadRequestException();
+      return this.repo.save(plainToInstance(UserEntity, data));
+    }
   }
   /**
    * 密码修改
-   * @param token
    * @param password
    * @returns
    */
   async setPassword(data: UserEntity) {
-    const res = await this.validateUser(data);
-    if (res.code) return res;
-    return data.id ? this.repo.save(data) : { code: 1, msg: '不存在该用户' };
+    const { username, password, newPassword } = data;
+    const user = await this.findOne({ where: { username } });
+    if (bcrypt.compareSync(password, user.password)) {
+      data.password = newPassword;
+      return this.repo.save(plainToInstance(UserEntity, data));
+    } else return { code: 1, msg: '原密码错误' };
   }
 }

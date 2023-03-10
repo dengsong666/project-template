@@ -1,19 +1,29 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Patch,
   Post,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { Crud, CrudController } from '@nestjsx/crud';
+import {
+  Crud,
+  CrudController,
+  CrudRequest,
+  Override,
+  ParsedBody,
+  ParsedRequest,
+} from '@nestjsx/crud';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
 import { NoAuth, Roles } from 'src/common/decorator';
 import { RolesGuard } from 'src/common/guard/role.guard';
 import { Request } from 'express';
 import { UserRole } from 'src/utils/enum';
+import { plainToInstance } from 'class-transformer';
 @Crud({
   model: { type: UserEntity },
   routes: {
@@ -25,41 +35,37 @@ import { UserRole } from 'src/utils/enum';
   dto: {
     update: UserEntity,
   },
-  query: {
-    join: {
-      profile: {
-        persist: ['username'],
-        exclude: ['token'],
-        eager: true,
-      },
-    },
-  },
 })
 @Controller('user')
 @UseGuards(RolesGuard)
 export class UserController implements CrudController<UserEntity> {
   constructor(public service: UserService) {}
-  // 登录测试
+  // 登录
   @NoAuth()
   @Post('login')
-  async login(@Body() data: UserEntity): Promise<any> {
+  login(@Body() data: UserEntity): Promise<any> {
     return this.service.login(data);
   }
+  // 注册
   @NoAuth()
   @Post('register')
-  async register(@Body() data: UserEntity) {
+  register(@Body() data: UserEntity) {
     return this.service.register(data);
   }
+  // 获取个人信息
   @Get('profile')
-  async profile(@Req() request: Request): Promise<any> {
-    const { id, username } = request.user as any;
-    return this.service.getProfile(id);
+  getProfile(@Req() request: Request) {
+    return this.service.profile(plainToInstance(UserEntity, request.user));
   }
+  // 修改个人信息
+  @Patch('profile')
+  setProfile(@Req() request: Request, @Body() data: UserEntity): Promise<any> {
+    data.id = (request.user as any).id;
+    return this.service.profile(data, false);
+  }
+  // 修改个人密码
   @Patch('password')
-  async password(
-    @Req() request: Request,
-    @Body() data: UserEntity,
-  ): Promise<any> {
+  password(@Req() request: Request, @Body() data: UserEntity): Promise<any> {
     const { id, username } = request.user as any;
     data.id = id;
     data.username = username;
