@@ -56,6 +56,8 @@ import { plainToInstance } from 'class-transformer';
   },
   query: {
     exclude: ['password'],
+    alwaysPaginate: true,
+    // limit: 10,
   },
 })
 @Controller('user')

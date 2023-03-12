@@ -9,12 +9,12 @@ import helmet from 'helmet';
 CrudConfigService.load({
   query: {
     maxLimit: 100,
-    cache: 2000,
+    // cache: 2000,
   },
   routes: {
-    // deleteOneBase: {
-    //   returnDeleted: true,
-    // },
+    deleteOneBase: {
+      returnDeleted: true,
+    },
   },
 });
 async function bootstrap() {

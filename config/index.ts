@@ -24,5 +24,5 @@ export default [
   // }),
   database,
   email,
-  redis,
+  // redis,
 ];

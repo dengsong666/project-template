@@ -17,6 +17,7 @@ specifiers:
   '@nestjs/throttler': ^4.0.0
   '@nestjs/typeorm': ^9.0.1
   '@nestjsx/crud': 5.0.0-alpha.3
+  '@nestjsx/crud-request': 5.0.0-alpha.3
   '@nestjsx/crud-typeorm': 5.0.0-alpha.3
   '@types/bcrypt': ^5.0.0
   '@types/bull': ^4.10.0
@@ -73,6 +74,7 @@ dependencies:
   '@nestjs/throttler': 4.0.0_shbtxdxgogsm4p64bg2toeylku
   '@nestjs/typeorm': 9.0.1_rfqdnwiybzocqbxtj3lzfvraga
   '@nestjsx/crud': 5.0.0-alpha.3_p4ywi7fdcrugq6nsanv77hac4q
+  '@nestjsx/crud-request': 5.0.0-alpha.3
   '@nestjsx/crud-typeorm': 5.0.0-alpha.3
   bcrypt: 5.1.0
   bull: 4.10.4
