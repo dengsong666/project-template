@@ -1,15 +1,18 @@
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { plainToClass, plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
+import { Cron } from '@nestjs/schedule';
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
   constructor(
     @InjectRepository(UserEntity) repo,
     private readonly jwtService: JwtService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     super(repo);
   }
@@ -37,12 +40,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const user = await this.findOne({ where: { username } });
     const { id, password: pwd, role } = user;
     if (user) {
-      if (bcrypt.compareSync(password, pwd))
-        return {
-          token: this.jwtService.sign({ username, id, role }),
-          msg: '登录成功',
-        };
-      else return { code: 1, msg: '密码错误' };
+      if (bcrypt.compareSync(password, pwd)) {
+        const token = this.jwtService.sign({ username, id, role });
+        this.cacheManager.set(`${id}&${username}&${role}`, token, 1800 * 1000);
+        return { token, msg: '登录成功' };
+      } else return { code: 1, msg: '密码错误' };
     }
     return { code: 2, msg: '用户不存在' };
   }
@@ -52,10 +54,10 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
    * @returns
    */
   async register(data: UserEntity): Promise<any> {
-    const { username, password } = data;
+    const { username } = data;
     const user = await this.findOne({ where: { username } });
     if (user) return { code: 2, msg: '用户已存在' };
-    return this.repo.save(plainToInstance(UserEntity, { username, password }));
+    return this.repo.save(data);
   }
   /**
    * 个人信息
@@ -67,7 +69,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     if (isGet) return this.findOne({ where: { id: data.id } });
     else {
       if (data.password || data.newPassword) this.throwBadRequestException();
-      return this.repo.save(plainToInstance(UserEntity, data));
+      return this.repo.save(data);
     }
   }
   /**
@@ -80,7 +82,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     const user = await this.findOne({ where: { username } });
     if (bcrypt.compareSync(password, user.password)) {
       data.password = newPassword;
-      return this.repo.save(plainToInstance(UserEntity, data));
+      return this.repo.save(data);
     } else return { code: 1, msg: '原密码错误' };
   }
 }

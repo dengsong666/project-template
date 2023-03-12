@@ -12,13 +12,16 @@ CrudConfigService.load({
     cache: 2000,
   },
   routes: {
-    deleteOneBase: {
-      returnDeleted: true,
-    },
+    // deleteOneBase: {
+    //   returnDeleted: true,
+    // },
   },
 });
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
+    // logger: console,
+  });
   // app.setGlobalPrefix('api/v1');
   app.useGlobalInterceptors(new ResponseInterceptor()); // 结果格式化
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector))); // 结果序列化

@@ -16,11 +16,11 @@ export default TypeOrmModule.forRootAsync({
   useFactory: () => ({
     type: 'mysql',
     host: process.env.DATABASE_HOST,
-    port: Number(process.env.DATABASE_PORT),
+    port: +process.env.DATABASE_PORT,
     username: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
     database: 'test',
-    synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
+    synchronize: !!process.env.DATABASE_SYNCHRONIZE,
     autoLoadEntities: true,
   }),
 });

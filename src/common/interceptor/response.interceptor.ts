@@ -1,3 +1,4 @@
+import { password } from 'src/utils/regexp';
 import {
   Injectable,
   NestInterceptor,
@@ -29,6 +30,7 @@ export class ResponseInterceptor implements NestInterceptor {
       map((value) => {
         const { code = 0, msg = '', ...data } = value ?? {};
         const { method } = context.switchToHttp().getRequest();
+        delete data.password;
         return {
           data: isNotEmptyObject(data) ? (isArray(value) ? value : data) : null,
           msg: msg || action(method),

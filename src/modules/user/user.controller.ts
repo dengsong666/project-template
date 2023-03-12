@@ -24,16 +24,38 @@ import { RolesGuard } from 'src/common/guard/role.guard';
 import { Request } from 'express';
 import { UserRole } from 'src/utils/enum';
 import { plainToInstance } from 'class-transformer';
+
 @Crud({
   model: { type: UserEntity },
   routes: {
-    exclude: ['createOneBase'],
+    createOneBase: {
+      decorators: [Roles(UserRole.ADMIN)],
+    },
+    createManyBase: {
+      decorators: [Roles(UserRole.ADMIN)],
+    },
+    deleteOneBase: {
+      decorators: [Roles(UserRole.ADMIN)],
+      returnDeleted: true,
+    },
+    updateOneBase: {
+      decorators: [Roles(UserRole.ADMIN)],
+    },
+    getOneBase: {
+      decorators: [Roles(UserRole.ADMIN)],
+    },
     getManyBase: {
       decorators: [Roles(UserRole.ADMIN)],
     },
+    replaceOneBase: {
+      decorators: [Roles(UserRole.ADMIN)],
+    },
+    recoverOneBase: {
+      decorators: [Roles(UserRole.ADMIN)],
+    },
   },
-  dto: {
-    update: UserEntity,
+  query: {
+    exclude: ['password'],
   },
 })
 @Controller('user')
@@ -50,7 +72,7 @@ export class UserController implements CrudController<UserEntity> {
   @NoAuth()
   @Post('register')
   register(@Body() data: UserEntity) {
-    return this.service.register(data);
+    return this.service.register(plainToInstance(UserEntity, data));
   }
   // 获取个人信息
   @Get('profile')
@@ -61,7 +83,7 @@ export class UserController implements CrudController<UserEntity> {
   @Patch('profile')
   setProfile(@Req() request: Request, @Body() data: UserEntity): Promise<any> {
     data.id = (request.user as any).id;
-    return this.service.profile(data, false);
+    return this.service.profile(plainToInstance(UserEntity, data), false);
   }
   // 修改个人密码
   @Patch('password')
@@ -69,6 +91,6 @@ export class UserController implements CrudController<UserEntity> {
     const { id, username } = request.user as any;
     data.id = id;
     data.username = username;
-    return this.service.setPassword(data);
+    return this.service.setPassword(plainToInstance(UserEntity, data));
   }
 }
