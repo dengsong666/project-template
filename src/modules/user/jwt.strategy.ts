@@ -9,8 +9,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Cache } from 'cache-manager';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() // @Inject(CACHE_MANAGER) private cacheManager: Cache
-  {
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -19,19 +18,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
   async validate(request: Request, { id, username, role }) {
-    // const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request as any);
-    // const cacheToken = await this.cacheManager.get(`${id}&${username}&${role}`);
-    // if (!cacheToken) {
-    //   throw new UnauthorizedException('token 已过期');
-    // }
-    // if (token != cacheToken) {
-    //   throw new UnauthorizedException('token不正确');
-    // }
-    // this.cacheManager.set(
-    //   `${id}&${username}&${role}`,
-    //   token,
-    //   24 * 60 * 60 * 1000,
-    // );
+    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request as any);
+    const cacheToken = await this.cacheManager.get(`${id}&${username}&${role}`);
+    if (!cacheToken) {
+      throw new UnauthorizedException('token 已过期');
+    }
+    if (token != cacheToken) {
+      throw new UnauthorizedException('token不正确');
+    }
+    this.cacheManager.set(
+      `${id}&${username}&${role}`,
+      token,
+      24 * 60 * 60 * 1000,
+    );
     return { id, username, role };
   }
 }

@@ -8,8 +8,10 @@ import { JwtAuthGuard } from './common/guard/auth.guard';
 import helmet from 'helmet';
 CrudConfigService.load({
   query: {
+    alwaysPaginate: true,
     maxLimit: 100,
-    // cache: 2000,
+    limit: 10,
+    cache: 2000,
   },
   routes: {
     deleteOneBase: {
@@ -18,10 +20,7 @@ CrudConfigService.load({
   },
 });
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: true,
-    // logger: console,
-  });
+  const app = await NestFactory.create(AppModule, { cors: true });
   // app.setGlobalPrefix('api/v1');
   app.useGlobalInterceptors(new ResponseInterceptor()); // 结果格式化
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector))); // 结果序列化

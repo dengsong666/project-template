@@ -9,10 +9,9 @@ export default CacheModule.registerAsync({
         host: process.env.REDIS_HOST,
         port: +process.env.REDIS_PORT,
       },
-      ttl: 5,
+      ttl: 5000,
       password: process.env.REDIS_PASSWORD,
     }),
-    ttl: 5,
     max: 10,
   }),
 });

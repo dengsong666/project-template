@@ -4,16 +4,14 @@ import { Cache } from 'cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import * as bcrypt from 'bcrypt';
-import { plainToClass, plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
-import { Cron } from '@nestjs/schedule';
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
   constructor(
     @InjectRepository(UserEntity) repo,
     private readonly jwtService: JwtService,
-  ) // @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  {
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {
     super(repo);
   }
   /**
@@ -42,7 +40,11 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     if (user) {
       if (bcrypt.compareSync(password, pwd)) {
         const token = this.jwtService.sign({ username, id, role });
-        // this.cacheManager.set(`${id}&${username}&${role}`, token, 1800 * 1000);
+        this.cacheManager.set(
+          `${id}&${username}&${role}`,
+          token,
+          30 * 60 * 1000,
+        );
         return { token, msg: '登录成功' };
       } else return { code: 1, msg: '密码错误' };
     }

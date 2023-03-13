@@ -5,7 +5,6 @@ import database from './database';
 import email from './email';
 import redis from './redis';
 
-// const store = await redisStore();
 export default [
   ConfigModule.forRoot({
     isGlobal: true,
@@ -24,5 +23,5 @@ export default [
   // }),
   database,
   email,
-  // redis,
+  redis,
 ];
