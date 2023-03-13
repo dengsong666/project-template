@@ -40,6 +40,10 @@ export class UserEntity extends BaseEntity {
   nickname: string;
 
   @IsOptional()
+  @Column({ length: 100, nullable: true })
+  avatar: string;
+
+  @IsOptional()
   @Max(150, { message: '年龄最大值为150' })
   @Min(1, { message: '年龄最小值为1' })
   @IsInt({ message: '请输入整数' })

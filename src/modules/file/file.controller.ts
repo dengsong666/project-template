@@ -33,9 +33,8 @@ export class FileController {
     @UploadedFiles(new ParseFilePipe({ validators: fileValidators }))
     files: Array<Express.Multer.File>,
   ) {
-    console.log(files);
-    files.forEach((file) => {
-      fs.writeFileSync(file.originalname, file.buffer);
-    });
+    return files.map(({ path }) =>
+      path.replace('public', '').replace(/\\/g, '/'),
+    );
   }
 }

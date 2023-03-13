@@ -4,6 +4,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import database from './database';
 import email from './email';
 import redis from './redis';
+import file from './file';
 
 export default [
   ConfigModule.forRoot({
@@ -24,4 +25,5 @@ export default [
   database,
   email,
   redis,
+  file,
 ];

@@ -54,11 +54,9 @@ import { plainToInstance } from 'class-transformer';
       decorators: [Roles(UserRole.ADMIN)],
     },
   },
-  // query: {
-  //   exclude: ['password'],
-  //   alwaysPaginate: true,
-  //   // limit: 10,
-  // },
+  query: {
+    exclude: ['password'],
+  },
 })
 @Controller('user')
 @UseGuards(RolesGuard)

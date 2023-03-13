@@ -18,9 +18,15 @@ import { HttpExceptionFiter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 import { JwtAuthGuard } from './common/guard/auth.guard';
 import helmet from 'helmet';
+import { join } from 'path';
+import * as express from 'express';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+  });
+  app.useStaticAssets('public');
   // app.setGlobalPrefix('api/v1');
   app.useGlobalInterceptors(new ResponseInterceptor()); // 结果格式化
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector))); // 结果序列化
