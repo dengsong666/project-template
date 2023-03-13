@@ -1,16 +1,10 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { HttpExceptionFiter } from './common/filters/http-exception.filter';
-import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 import { CrudConfigService } from '@nestjsx/crud';
-import { JwtAuthGuard } from './common/guard/auth.guard';
-import helmet from 'helmet';
 CrudConfigService.load({
   query: {
     alwaysPaginate: true,
     maxLimit: 100,
-    limit: 10,
     cache: 2000,
   },
   routes: {
@@ -19,6 +13,12 @@ CrudConfigService.load({
     },
   },
 });
+import { AppModule } from './app.module';
+import { HttpExceptionFiter } from './common/filters/http-exception.filter';
+import { ResponseInterceptor } from './common/interceptor/response.interceptor';
+import { JwtAuthGuard } from './common/guard/auth.guard';
+import helmet from 'helmet';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   // app.setGlobalPrefix('api/v1');
