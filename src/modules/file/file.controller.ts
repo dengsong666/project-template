@@ -3,24 +3,13 @@ https://docs.nestjs.com/controllers#controllers
 */
 
 import {
-  Body,
   Controller,
-  FileTypeValidator,
-  HttpStatus,
-  MaxFileSizeValidator,
   ParseFilePipe,
-  ParseFilePipeBuilder,
   Post,
-  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  AnyFilesInterceptor,
-  FileInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express';
-import * as fs from 'fs';
+import { FilesInterceptor } from '@nestjs/platform-express';
 const fileValidators = [
   // new MaxFileSizeValidator({ maxSize: 1000 }),
   // new FileTypeValidator({ fileType: 'image/jpeg' }),

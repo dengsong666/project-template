@@ -4,26 +4,16 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  PrimaryColumn,
 } from 'typeorm';
-import {
-  Exclude,
-  Transform,
-  TransformPlainToInstance,
-} from 'class-transformer';
 import { UserRole } from 'src/utils/enum';
 import {
-  IsDefined,
   IsEnum,
   IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   Matches,
   Max,
   Min,
-  min,
-  validate,
 } from 'class-validator';
 import { password, phone } from 'src/utils/regexp';
 import * as bcrypt from 'bcrypt';
