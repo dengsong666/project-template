@@ -1,0 +1,24 @@
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+}
+ul{
+  padding: 0;
+}
+
+li{
+  list-style:none
+}
+
+a {
+  text-decoration: none;
+}
+
+pre {
+  white-space: pre-wrap; /* css-3 */
+  word-wrap: break-word; /* InternetExplorer5.5+ */
+}
+
+input, select, textarea,pre { font-family: inherit; }
