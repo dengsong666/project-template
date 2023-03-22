@@ -1,12 +1,12 @@
 import axios from 'axios'
-import type { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios'
+import type { AxiosError, AxiosRequestConfig } from 'axios'
 
-const service: AxiosInstance = axios.create({
+export const service = axios.create({
   baseURL: '/api',
   timeout: 30000
 })
 const errors: AnyObj = {
-  401: 'token 失效，请重新登录',
+  401: '未授权',
   403: '拒绝访问',
   404: '请求地址错误',
   500: '服务器故障',
@@ -17,6 +17,10 @@ interface ResponseData<T> {
   data: T
   code: string
 }
+const r =
+  (method: string) =>
+  <T = any>(config: AxiosRequestConfig): Promise<ResponseData<T>> =>
+    service.request({ ...config, method })
 /* 请求拦截器 */
 service.interceptors.request.use(
   (config) => {
@@ -31,19 +35,19 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response) => {
-    const { code, message, data } = response.data
-    // 根据自定义错误码判断请求是否成功
-    if (code === 200) return data
+    const { code = 200, msg = '', data = response.data } = response.data
+    if (code === 200) return { code, data, msg } as any
     else {
       // 处理业务错误。
       // Message.error(message)
-      return Promise.reject(new Error(message))
+
+      return Promise.reject(new Error(msg))
     }
   },
   (error: AxiosError) => {
-    // Message.error(errors[status as unknown as string])
+    const { code = undefined } = error.response?.data as any
+    // message.error(errors[code])
     return Promise.reject(error)
   }
 )
-
-export default <T = any>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', config: AxiosRequestConfig): Promise<ResponseData<T>> => service.request({ ...config, method })
+export default { get: r('get'), post: r('post'), put: r('put'), patch: r('patch'), delete: r('delete') }
