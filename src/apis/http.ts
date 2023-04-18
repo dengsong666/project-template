@@ -3,7 +3,7 @@ import type { AxiosError, AxiosRequestConfig } from 'axios'
 
 export const service = axios.create({
   baseURL: '/api',
-  timeout: 30000
+  timeout: 3000
 })
 const errors: AnyObj = {
   401: '未授权',

@@ -39,6 +39,7 @@ export default defineConfig({
     ['flex-row', 'flex flex-row'],
     ['flex-col', 'flex flex-col'],
     ['flex-center', 'flex justify-center items-center'],
+    ['grid-center', 'grid place-items-center'],
     ['e-auto', 'pointer-events-auto'],
     ['operate', 'm8px c-default cursor-pointer'],
     ['add-btn', 'flex-center bg-#363b64 p8px rd-10px ml-auto']
