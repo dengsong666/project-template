@@ -1,3 +1,3 @@
-declare global {}
-
-type AnyObj = { [key: string]: string }
+declare global {
+  type AnyObj = { [key: string]: string }
+}
