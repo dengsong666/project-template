@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "antfu.unocss",
+    "antfu.vite",
+    "vue.volar",
+    "mrmaoddxxaa.create-uniapp-view",
+    "uni-helper.uni-app-schemas-vscode",
+    "dlhtx.uniapp-snippet",
+    "dbaeumer.vscode-eslint"
+  ]
+}

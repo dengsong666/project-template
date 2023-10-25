@@ -1,0 +1,28 @@
+{
+  // 配置语言的文件关联
+  "files.associations": {
+    "pages.json": "jsonc",
+    "manifest.json": "jsonc"
+  },
+  "path-intellisense.mappings": {
+    "@": "${workspaceRoot}/src"
+  },
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml"
+  ]
+}

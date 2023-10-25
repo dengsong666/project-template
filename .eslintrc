@@ -1,0 +1,4 @@
+{
+  "extends": "@antfu",
+  "max-statements-per-line": ["error", { "max": 2 }]
+}

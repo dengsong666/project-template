@@ -1,0 +1,139 @@
+{
+	"pages": [ // pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/yutang/index"
+		},
+		{
+			"path": "pages/common/details/other/index"
+		},
+		{
+			"path": "pages/common/details/bigao/index"
+		},
+		{
+			"path": "pages/yugang/index"
+		},
+		{
+			"path": "pages/yugang/fish/index"
+		},
+		{
+			"path": "pages/my/index"
+		},
+		{
+			"path": "pages/publish/index"
+		},
+		{
+			"path": "pages/common/message/details/index"
+		},
+		{
+			"path": "pages/common/message/index"
+		},
+		{
+			"path": "pages/yugang/wordSet/index"
+		},
+		{
+			"path": "pages/my/personalData/index"
+		},
+		{
+			"path": "pages/my/dilatation/index"
+		},
+		{
+			"path": "pages/common/login/index",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarBackgroundColor": "#3A69F5",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/common/search/index"
+		},
+		{
+			"path": "pages/yusi/index"
+		},
+		{
+			"path": "pages/yusi/czjl/index"
+		},
+		{
+			"path": "pages/yusi/czjl/copyrightDetail/index"
+		},
+		{
+			"path": "pages/yusi/protocalAssistant/index"
+		},
+		{
+			"path": "pages/my/realnameAuth/index"
+		},
+		{
+			"path": "pages/my/customerService/index"
+		},
+		{
+			"path": "pages/my/set/index"
+		},
+		{
+			"path": "pages/my/getFishhook/index"
+		},
+		{
+			"path": "pages/my/consumeRecord/index"
+		},
+		{
+			"path": "pages/my/set/protocol/index"
+		}
+	],
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#3A69F5",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/yutang/index",
+				"iconPath": "static/icons/yutang.png",
+				"selectedIconPath": "static/icons/yutanged.png",
+				"text": "鱼塘"
+			},
+			{
+				"pagePath": "pages/yugang/index",
+				"iconPath": "static/icons/yugang.png",
+				"selectedIconPath": "static/icons/yuganged.png",
+				"text": "鱼缸"
+			},
+			{
+				"pagePath": "pages/publish/index",
+				"iconPath": "static/icons/publish.png",
+				"selectedIconPath": "static/icons/publish.png",
+				"text": ""
+			},
+			{
+				"pagePath": "pages/yusi/index",
+				"iconPath": "static/icons/yusi.png",
+				"selectedIconPath": "static/icons/yusied.png",
+				"text": "鱼肆"
+			},
+			{
+				"pagePath": "pages/my/index",
+				"iconPath": "static/icons/my.png",
+				"selectedIconPath": "static/icons/myed.png",
+				"text": "我的"
+			}
+		],
+		// #ifdef APP-PLUS
+		"midButton": {
+			"iconPath": "static/icons/publish.png",
+			"height": "80px",
+			"iconWidth": "60px"
+		}
+		// #endif
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"navigationStyle": "custom"
+	},
+	"easycom": {
+		"custom": {
+			"^tn-(.*)-(item|group)$": "@tuniao/tnui-vue3-uniapp/components/$1/src/$1-$2.vue",
+			"^tn-(.*)": "@tuniao/tnui-vue3-uniapp/components/$1/src/$1.vue"
+		}
+	}
+}
