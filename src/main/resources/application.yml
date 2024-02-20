@@ -21,7 +21,7 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     cache-enabled: true
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
-  type-aliases-package: com.example.demo.pojo
+  type-aliases-package: com.example.pojo
   global-config:
     banner: false
     db-config:
@@ -33,13 +33,14 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
     #operations-sorter: order
+    persist-authorization: true
   api-docs:
     path: /v3/api-docs
   group-configs:
     - group: 'default'
       display-name: '测试'
       paths-to-match: '/**'
-      packages-to-scan: com.example.demo
+      packages-to-scan: com.example
   default-flat-param-object: true
 # knife4j的增强配置，不需要增强可以不配
 knife4j:
@@ -53,3 +54,5 @@ aliyun:
     access-key-id: LTAI5tFb25mLmvMANonwq8Fo
     access-key-secret: HLXkaZQqkYClRonSlPsAofewkaSnSt
     bucket-name: ds-web-test
+common:
+  token-header: Authorization
