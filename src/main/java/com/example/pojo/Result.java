@@ -5,10 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Result<T> {
+public class Result<T>  {
     private Integer code;
     private String msg;
     private T data;
@@ -21,11 +23,11 @@ public class Result<T> {
         return new Result<>(0, "操作成功", data);
     }
 
-    public static Result<?> error(String msg) {
+    public static Result<?> fail(String msg) {
         return new Result<>(1, msg, null);
     }
 
-    public static Result<?> exception(HttpStatus code, String msg) {
-        return new Result<>(code.value(), msg, null);
+    public static Result<?> fail(Integer code, String msg) {
+        return new Result<>(code, msg, null);
     }
 }

@@ -1,53 +1,96 @@
 package com.example.exception;
 
 import com.example.pojo.Result;
-
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.nio.file.AccessDeniedException;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
-@RestControllerAdvice
+//@RestControllerAdvice
 public class GlobalException {
 
-    // 参数格式异常处理
-    @ExceptionHandler({IllegalArgumentException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result<?> badRequestException(IllegalArgumentException ex) {
-        log.error("参数格式不合法：{}", ex.getMessage());
-        return Result.exception(HttpStatus.BAD_REQUEST, "参数格式不符！");
+
+    /**
+     * 处理业务异常，自定义异常
+     */
+    @ExceptionHandler(BizException.class)
+    public Result<?> bizExceptionHandler(BizException e) {
+        log.error("自定义异常：{}", e.getMessage());
+        return Result.fail(e.getMessage());
     }
-    // 参数缺失异常处理
-    @ExceptionHandler({MissingServletRequestParameterException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Result<?>badRequestException(Exception ex) {
-        return Result.exception(HttpStatus.BAD_REQUEST, "缺少必填参数！");
-    }
-    // 权限不足异常处理
-    @ExceptionHandler({AccessDeniedException.class})
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Result<?> badRequestException(AccessDeniedException ex) {
-        return Result.exception(HttpStatus.FORBIDDEN, ex.getMessage());
-    }
-    // 空指针异常
+
+    /**
+     * 处理空指针的异常
+     */
     @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result<?> handleTypeMismatchException(NullPointerException ex) {
-        log.error("空指针异常，{}", ex.getMessage());
-        return Result.exception(HttpStatus.INTERNAL_SERVER_ERROR, "空指针异常");
+    public Result<?> nullPointExceptionHandler(NullPointerException e) {
+        log.error("空指针异常：{}", e.getMessage());
+
+        return Result.fail(e.getMessage());
     }
-    // 系统异常
-    @ExceptionHandler(Throwable.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Result<?> exception(Throwable throwable) {
-        String message = throwable.getMessage();
-        log.error("未知异常", throwable);
-        return Result.exception(HttpStatus.INTERNAL_SERVER_ERROR, StringUtils.hasLength(message) ? message : "未知异常，请联系管理员");
+
+    /**
+     * 处理请求参数异常
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public Result<?> missingServletRequestParameterExceptionHandler(
+            MissingServletRequestParameterException e) {
+        return Result.fail(e.getParameterName() + "检查失败");
+    }
+
+    /**
+     * 处理 form data方式调用接口校验失败抛出的异常
+     */
+    @ExceptionHandler(BindException.class)
+    public Result<?> bindExceptionHandler(BindException e) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        List<String> collect =
+                fieldErrors.stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+        return Result.fail(BizExceptionEnum.sys_0003.getCode(), collect.toString());
+    }
+
+    /**
+     * 处理单个参数校验失败抛出的异常
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Result<?> constraintViolationExceptionHandler(ConstraintViolationException e) {
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        List<String> collect =
+                constraintViolations.stream()
+                        .map(ConstraintViolation::getMessage)
+                        .toList();
+        return Result.fail(BizExceptionEnum.sys_0003.getCode(), collect.toString());
+    }
+
+    /**
+     * 处理其他异常
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public Result<?> illegalArgumentExceptionHandler(RuntimeException e) {
+        System.out.println(e);
+        log.error("未：{}", e.getMessage());
+        log.error(String.valueOf(e));
+        return Result.fail(e.getMessage());
+    }
+
+    /**
+     * 处理其他异常
+     */
+    @ExceptionHandler(Exception.class)
+    public Result<?> exceptionHandler(Exception e) {
+        System.out.println(e);
+        log.error("未知异常：{}", e.getMessage());
+        log.error(String.valueOf(e));
+        return Result.fail(e.getMessage());
     }
 }

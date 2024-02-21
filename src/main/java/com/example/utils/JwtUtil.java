@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class JwtUtil {
-    private static final Long expire = 3600 * 1000 * 12L;
+    private static final Long expire = 1000 * 60 * 60 * 12L;
     private static final String signKey = "test";
     public static String generate(Map<String, Object> claims) {
         return Jwts.builder()

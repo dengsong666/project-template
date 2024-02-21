@@ -1,6 +1,6 @@
 package com.example.aop;
 
-import com.example.config.CommonConfig;
+import com.example.constant.CommonConstant;
 import com.example.mapper.OperateLogMapper;
 import com.example.pojo.OperateLog;
 import com.example.utils.JwtUtil;
@@ -25,13 +25,10 @@ public class LogAop {
     @Autowired
     private OperateLogMapper operateLogMapper;
 
-    @Autowired
-    private CommonConfig commonConfig;
 
-    @Around("execution(* com.example.service.*.save*(..)) execution(* com.example.service.*.del*(..)) execution(* com.example.service.*.up*(..))")
-//    @Around("@annotation(com.example.aop.LogAnno)")
+    @Around("execution(* com.example.service.*.save*(..)) execution(* com.example.service.*.del*(..)) execution(* com.example.service.*.up*(..)) || @annotation(com.example.aop.LogAnno)")
     public Object recordLog(ProceedingJoinPoint joinPoint) throws Throwable {
-        Claims claims = JwtUtil.parse(request.getHeader(commonConfig.getTokenHeader()));
+        Claims claims = JwtUtil.parse(request.getHeader(CommonConstant.TOENK_HEADER));
         // 操作人ID
         Integer operateUser = (Integer) claims.get("id");
         // 操作人用户名

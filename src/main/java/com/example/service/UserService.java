@@ -7,5 +7,9 @@ import java.util.List;
 public interface UserService {
     List<User> list();
 
-    User login(String username,String password);
+    Long register(User user);
+
+    String login(String username,String password);
+
+    User getById(Long id);
 }
