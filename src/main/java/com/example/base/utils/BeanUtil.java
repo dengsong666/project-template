@@ -1,25 +1,20 @@
 package com.example.base.utils;
 
 import com.esotericsoftware.reflectasm.ConstructorAccess;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cglib.beans.BeanCopier;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Slf4j
+@NoArgsConstructor
 public class BeanUtil{
-
-    private BeanUtil() {
-        //do nothing
-    }
 
     public static final Map<String, BeanCopier> BEAN_COPIER_CACHE = new ConcurrentHashMap<>();
 
@@ -30,7 +25,7 @@ public class BeanUtil{
         copier.copy(source, target, null);
     }
 
-    private static BeanCopier getBeanCopier(Class sourceClass, Class targetClass) {
+    private static BeanCopier getBeanCopier(Class<?> sourceClass, Class<?> targetClass) {
         String beanKey = generateKey(sourceClass, targetClass);
         BeanCopier copier = null;
         if (!BEAN_COPIER_CACHE.containsKey(beanKey)) {
@@ -44,10 +39,6 @@ public class BeanUtil{
 
     /**
      * 两个类的全限定名拼接起来构成Key
-     *
-     * @param sourceClass
-     * @param targetClass
-     * @return
      */
     private static String generateKey(Class<?> sourceClass, Class<?> targetClass) {
         return sourceClass.getName() + targetClass.getName();
@@ -56,10 +47,9 @@ public class BeanUtil{
     public static <T> T copyProperties(Object source, Class<T> targetClass) {
         T t = null;
         try {
-            t = targetClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            log.error(e.getMessage());
-//            throw new BeanCopyException(String.format("Create new instance of %s failed: %s", targetClass, e.getMessage()));
+            t = targetClass.getDeclaredConstructor().newInstance();
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
         copyProperties(source, t);
         return t;
@@ -80,7 +70,7 @@ public class BeanUtil{
                 resultList.add(t);
             } catch (Exception e) {
                 log.error(e.getMessage());
-//                throw new BeanCopyException(e);
+                throw new RuntimeException(e);
             }
         }
         return resultList;
@@ -97,7 +87,7 @@ public class BeanUtil{
             CONSTRUCTOR_ACCESS_CACHE.put(targetClass.toString(), constructorAccess);
         } catch (Exception e) {
             log.error(e.getMessage());
-//            throw new BeanCopyException(String.format("Create new instance of %s failed: %s", targetClass, e.getMessage()));
+            throw new RuntimeException(String.format("Create new instance of %s failed: %s", targetClass, e.getMessage()));
         }
         return constructorAccess;
     }

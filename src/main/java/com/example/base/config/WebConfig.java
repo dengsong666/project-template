@@ -29,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
         // swagger
         ignorePath.add("/swagger-resources/**");
         ignorePath.add("/doc.html");
+//        ignorePath.add("/favicon.ico");
         ignorePath.add("/v3/**");
         ignorePath.add("/webjars/**");
         ignorePath.add("/springdoc/**");

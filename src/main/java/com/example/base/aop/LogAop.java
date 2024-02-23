@@ -7,6 +7,7 @@ import com.example.base.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,13 +19,11 @@ import java.util.Arrays;
 
 @Component
 @Aspect
+@RequiredArgsConstructor
 public class LogAop {
-    @Autowired
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
-    @Autowired
-    private OperateLogMapper operateLogMapper;
-
+    private final OperateLogMapper operateLogMapper;
 
     @Around("execution(* com.example.biz.service.*.save*(..)) execution(* com.example.biz.service.*.del*(..)) execution(* com.example.biz.service.*.up*(..)) || @annotation(com.example.aop.LogAnno)")
     public Object recordLog(ProceedingJoinPoint joinPoint) throws Throwable {

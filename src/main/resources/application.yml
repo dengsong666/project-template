@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/test?rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost:3306/test?autoReconnect=true&rewriteBatchedStatements=true
     username: root
     password: 666
     druid:
@@ -38,16 +38,16 @@ mybatis-plus:
   type-aliases-package: com.example.biz.model.entity
 #  mapper-locations: classpath:mapper/*.xml
   configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     cache-enabled: true
-#    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
   global-config:
     banner: false
     db-config:
       id-type: auto
-      logic-delete-field: isDeleted
-      logic-delete-value: true
-      logic-not-delete-value: false
+      logic-delete-field: is_delete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 # springdoc-openapi项目配置
 springdoc:
   swagger-ui:

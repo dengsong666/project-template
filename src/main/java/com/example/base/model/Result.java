@@ -3,6 +3,7 @@ package com.example.base.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +13,7 @@ public class Result<T> {
     private String msg;
     private T data;
 
-    public static Result<?> success() {
+    public static Result<ObjectUtils.Null> success() {
         return new Result<>(0, "操作成功", null);
     }
 

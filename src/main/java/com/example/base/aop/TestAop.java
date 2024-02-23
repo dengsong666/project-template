@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class TestAop {
-    @Pointcut("execution(* com.example.biz.service.impl.UserServiceImpl.*(..))")
+    @Pointcut("execution(* com.example.biz.service.impl.IUserServiceImpl.*(..))")
 //    @Pointcut("@annotation(com.example.aop.MyAop)")
     private void pt() {};
     @Before("pt()")

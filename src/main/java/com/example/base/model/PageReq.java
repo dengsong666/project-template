@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 @Data
-public class PageReq<T> {
+public class PageReq {
 
     private Long pageNum;
     private Long pageSize;
