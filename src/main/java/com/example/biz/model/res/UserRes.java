@@ -1,6 +1,6 @@
 package com.example.biz.model.res;
 
-import com.example.biz.enums.UserStatus;
+import com.example.biz.model.entity.UserInfo;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +12,8 @@ public class UserRes {
     private String username;
 
     private Integer status;
+
+    private UserInfo info;
 
     private List<AddressRes> address;
 }

@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.biz.model.entity.User;
+import com.example.biz.model.entity.UserInfo;
 import com.example.biz.service.IUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,9 @@ class DemoApplicationTests {
     void saveBatch() {
         List<User> list = new ArrayList<>(1000);
         long start = System.currentTimeMillis();
-        for (int i = 1; i < 100000; i++) {
+        for (int i = 1; i < 100; i++) {
             list.add(new User().setUsername("user" + i).setPassword("123_" + i).setBalance(1000));
-            if (i % 1000 == 0) {
+            if (i % 10 == 0) {
                 IUserService.saveBatch(list);
                 list.clear();
             }

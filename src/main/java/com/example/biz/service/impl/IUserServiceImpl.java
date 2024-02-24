@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.example.base.model.PageRes;
 import com.example.base.utils.BeanUtil;
-import com.example.biz.enums.UserStatus;
 import com.example.biz.model.entity.Address;
 import com.example.biz.model.req.UserQuery;
 import com.example.biz.model.res.AddressRes;
@@ -40,10 +39,7 @@ public class IUserServiceImpl extends ServiceImpl<UserMapper, User> implements I
 
     @Override
     public void addUser(User user) {
-        String password = user.getPassword();
-        String newPassword = StringUtils.hasText(password) ? password : MsgConstant.ACCOUNT_DEFAULT_PASSWORD;
-        user.setPassword(DigestUtils.md5DigestAsHex(newPassword.getBytes()));
-        save(user);
+        save(user.setPassword(user.getPassword()));
     }
 
     @Override
