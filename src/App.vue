@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { getZTB } from './apis';
+
+
+// const res = getZTB()
+
+
 </script>
 
 <template>
-  <div>
-    模板
-  </div>
+  <Suspense>
+    <FileOss />
+  </Suspense>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

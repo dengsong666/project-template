@@ -1,3 +1,8 @@
 {
-  "recommendations": ["vue.volar", "vue.vscode-typescript-vue-plugin", "antfu.unocss", "antfu.vite", "esbenp.prettier-vscode"]
+  "recommendations": [
+    "vue.volar",
+    "antfu.unocss",
+    "antfu.vite",
+    "esbenp.prettier-vscode"
+  ]
 }
