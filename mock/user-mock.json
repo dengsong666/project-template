@@ -1,0 +1,44 @@
+{
+  "table": "user",
+  "mockStartIndex": "auto",
+  "mockCount": 10000,
+  "mockValueReference": "http://mockjs.com/examples.html#DPD",
+  "mock": {
+    "created_at": {
+      "type": "datetime",
+      "value": "@datetime()"
+    },
+    "updated_at": {
+      "type": "datetime",
+      "value": "@datetime()"
+    },
+    "deleted_at": {
+      "type": "datetime",
+      "value": ""
+    },
+    "username": {
+      "type": "varchar",
+      "value": "@string(10)"
+    },
+    "nickname": {
+      "type": "varchar",
+      "value": "@cname()"
+    },
+    "age": {
+      "type": "int",
+      "value": "@integer(1,100)"
+    },
+    "phone": {
+      "type": "varchar",
+      "value": "@string('number',11)"
+    },
+    "role": {
+      "type": "enum",
+      "value": "@integer(1,2)"
+    },
+    "password": {
+      "type": "varchar",
+      "value": "@string(10)"
+    }
+  }
+}
